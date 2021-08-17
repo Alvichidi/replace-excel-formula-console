@@ -79,16 +79,17 @@ namespace ExcelExternalLinkConverter
             {
                 Worksheet worksheet = (Worksheet)oBook.Worksheets[i];
                 int numberRows = worksheet.UsedRange.Rows.Count;
-                int numberCells = worksheet.UsedRange.Cells.Count;
+                int numberColumns = worksheet.UsedRange.Columns.Count;
 
                 for (int y = 1; y <= numberRows; y++)
                 {
-                    for (int x = 1; x <= numberCells; x++)
+                    for (int x = 1; x <= numberColumns; x++)
                     {
                         Range tagetCell = (Range)worksheet.Cells[y, x];
                         if (tagetCell.Value != null)
                         {
                             string formule = tagetCell.Formula;
+
                             for (int c = 0; c < numberChange; c++)
                             {
                                 formule = formule.Replace(oldStringsArray[c], replaceStringsArray[c]);
