@@ -74,10 +74,10 @@ namespace ExcelExternalLinkConverter
             int numberChange = oldStringsArray.Length;
 
             int numberSheets = oBook.Worksheets.Count;
+            bool isChanged = false;
             for (int i = 1; i <= numberSheets; i++)
             {
                 Worksheet worksheet = (Worksheet)oBook.Worksheets[i];
-
                 int numberRows = worksheet.UsedRange.Rows.Count;
                 int numberCells = worksheet.UsedRange.Cells.Count;
 
@@ -86,7 +86,7 @@ namespace ExcelExternalLinkConverter
                     for (int x = 1; x <= numberCells; x++)
                     {
                         Range tagetCell = (Range)worksheet.Cells[y, x];
-                        if (tagetCell != null)
+                        if (tagetCell.Value != null)
                         {
                             string formule = tagetCell.Formula;
                             for (int c = 0; c < numberChange; c++)
@@ -97,9 +97,9 @@ namespace ExcelExternalLinkConverter
                                 {
                                     string targetFilePath = formule.Substring(2, tempIndex - 2);
                                     targetFilePath = targetFilePath.Replace("[", "");
-                                    bool isExist = File.Exists(targetFilePath);
-                                    if (isExist)
+                                    if (File.Exists(targetFilePath))
                                     {
+                                        isChanged = true;
                                         tagetCell.Formula = formule;
                                     }
                                 }
@@ -108,7 +108,10 @@ namespace ExcelExternalLinkConverter
                     }
                 }
             }
-            oBook.Save();
+            if (isChanged)
+            {
+                oBook.Save();
+            }
         }
 
         public static Workbook OpenBook(Application excelInstance, string filepath)
